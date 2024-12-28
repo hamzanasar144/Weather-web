@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        .weather-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background: linear-gradient(to bottom right, #f0f8ff, #e6f3ff);
+        }
+        .weather-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+        .weather-info p {
+            margin: 0.8rem 0;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .search-box {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        input {
+            padding: 0.8rem;
+            width: 250px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52,152,219,0.3);
+        }
+        button {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container">
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="Enter city name">
+            <button onclick="getWeather()">Search</button>
+        </div>
+        <div class="weather-header">
+            <img id="conditionImg" src="" alt="weather condition">
+            <p style="font-size: 28px;" id="temp">--°C</p>
+        </div>
+        <div class="weather-info">
+            <p id="location">Location: --</p>
+            <p id="fahrenheit">Fahrenheit: --°F</p>
+            <p id="feelslike">Feels like: --°C</p>
+            <p id="humidity">Humidity: --%</p>
+            <p id="visibility">Visibility: --km</p>
+            <p id="windspeed">Wind Speed: --kp/h</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function getWeather() {
+            const city = document.getElementById("cityInput").value || "London";
+            const API_KEY = "d347dfb1a00b4f86add45435242510";
+            
+            axios.get(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`)
+            .then(function(response) {
+                const data = response.data;
+                document.getElementById("conditionImg").src = `https:${data.current.condition.icon}`;
+                document.getElementById("temp").textContent = `${data.current.temp_c}°C`;
+                document.getElementById("location").textContent = `Location: ${data.location.name}, ${data.location.region}, ${data.location.country}`;
+                document.getElementById("fahrenheit").textContent = `Fahrenheit: ${data.current.temp_f}°F`;
+                document.getElementById("feelslike").textContent = `Feels like: ${data.current.feelslike_c}°C`;
+                document.getElementById("humidity").textContent = `Humidity: ${data.current.humidity}%`;
+                document.getElementById("visibility").textContent = `Visibility: ${data.current.vis_km}km`;
+                document.getElementById("windspeed").textContent = `Wind Speed: ${data.current.wind_kph}kp/h`;
+            })
+            .catch(function(error) {
+                console.log("Error", error);
+                alert("Error fetching weather data. Please try again.");
+            });
+        }
+
+        // Load default weather on page load
+        getWeather();
+    </script>
+</body>
+</html>
